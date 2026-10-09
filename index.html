@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demon Slayer Roleplay - Obanai & Hashira Headquarters</title>
+    <title>Demon Slayer Roleplay - Hashira Headquarters</title>
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -33,15 +33,11 @@
             cursor: pointer; 
             font-size: 13px; 
             font-weight: 600;
-            transition: 0.2s;
         }
-        .btn:hover { background: #351c5e; border-color: #bb86fc; }
         .btn-danger { background: #5c1321; border-color: #942031; color: #ffb3b3; }
-        
         .chat-container { 
             border: 1px solid #4a2880; 
             background-color: rgba(16, 8, 28, 0.88);
-            /* صورة فخمة تجمع كل الهاشيرا وفرقة كامابوكو كخلفية للشات */
             background-image: url('https://alphacoders.com');
             background-size: cover;
             background-position: center;
@@ -54,22 +50,6 @@
             box-shadow: inset 0 0 25px rgba(0,0,0,0.8);
             position: relative;
         }
-        /* إدراج صورة بارزة وجانبية لأوباناي إيغورو داخل ساحة الشات */
-        .chat-container::before {
-            content: "";
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            width: 110px;
-            height: 150px;
-            background-image: url('https://alphacoders.com');
-            background-size: cover;
-            background-position: center;
-            border-radius: 8px;
-            opacity: 0.25;
-            pointer-events: none;
-            border: 1px solid #bb86fc;
-        }
         .msg-box { 
             margin-bottom: 16px; 
             padding: 12px 14px; 
@@ -77,7 +57,6 @@
             line-height: 1.6;
             max-width: 85%;
             box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-            position: relative;
             z-index: 2;
         }
         .msg-bot { 
@@ -92,7 +71,6 @@
         }
         .msg-name { font-weight: bold; font-size: 12px; margin-bottom: 6px; color: #c4a7ff; }
         .msg-user .msg-name { color: #80cbc4; }
-        
         .composer { display: flex; gap: 8px; }
         textarea { 
             flex: 1; 
@@ -104,7 +82,6 @@
             resize: none; 
             font-size: 14px;
         }
-        textarea:focus { outline: none; border-color: #bb86fc; }
         .send-btn { 
             background: #bb86fc; 
             color: #100720; 
@@ -122,7 +99,7 @@
     <div class="status" id="onlineStatus">• قصر الهاشيرا الموحد - ملكية أوباياشيكي</div>
     
     <div class="quick-actions">
-        <button class="btn quick-btn" data-text="*يجلس أوباناي فوق أحد غصون شجرة الساكورا الضخمة المطلة على باحة التدريب في مقر الهاشيرا المشترك، يضيق عينيه المتباينتين وهو يراقب فرقة كامابوكو (تانجيرو وزينيتسو وإينوسكي) وهم يتلقون عقابهم بالتدريب الشاق في الأسفل، ثم يلتفت نحو ج ببرود قاتل وعدائية واضحة ويعدل ضمادات فمه بيده النحيلة:* شتسوين واكفة هنا وتطالعين؟ عبالج هذا المكان للعب؟">مراقبة من الشجرة</button>
+        <button class="btn quick-btn" data-text="*يجلس أوباناي فوق أحد غصون شجرة الساكورا الضخمة المطلة على باحة التدريب في مقر الهاشيرا المشترك، يضيق عينيه المتباينتين وهو يراقب فرقة كامابوكو (تانجيرو وزينيتسو وإينوسكي) وهم يتلقون عقابهم بالتدريب الشاق في الأسفل، ثم يلتفت نحو ج ببرود قاتل وعدائية واضحة ويعدل ضمادات فمه بيده النحيلة:* وش عندج واكفة هنا وتطالعين؟ عبالج هذا المكان للعب؟">مراقبة من الشجرة</button>
         <button class="btn quick-btn" data-text="*تمر الهاشيرا شينوبو كوتشو من جانبكما بابتسامتها الهادئة المعتادة وتلقي التحية، مما يجعل أوباناي يشيح بنظره بإنزعاج مفرط، لتتحرك الأفعى كابورامارو فجأة ملتفة حول عنقه بقوة وتصدر فحيحاً حاداً ومخيفاً يمتد باتجاه ج كتحذير صارم*">تحذير كابورامارو</button>
         <button class="btn btn-danger" id="clearBtn">إعادة بدء السيناريو</button>
     </div>
@@ -137,8 +114,7 @@
     <input type="hidden" id="memoryText" value="المكان: مقر الهاشيرا المشترك والضخم داخل ملكية السيد كاجايا أوباياشيكي. الأجواء: تدريب شاق، مرور بقية الهاشيرا وفرقة تانجيرو بالخلفية، وعلاقة حذرة وتنافسية وعميقة جداً مع البطلة المندفعة.">
 
 <script>
-const SYSTEM_PROMPT = `أنت الآن تتقمص بشكل كامل، مطلق، واحترافي بدون الخروج عن النص شخصية الهاشيرا الصارم والغامض (أوباناي إيغورو - Obanai Iguro) من أنمي قاتل الشياطين.
-
+const SYSTEM_PROMPT = `أنت الآن تتقمص بشكل كامل، مطلق، واحترافي شخصية الهاشيرا الصارم والغامض (أوباناي إيغورو - Obanai Iguro) من أنمي قاتل الشياطين.
 قواعد الرد وتفاصيل السيناريو الإجبارية:
 1. الجغرافيا والمكان: أنت متواجد في "مقر الهاشيرا الموحد" المبني داخل ملكية وقصر السيد أوباياشيكي (كاجايا). هذا القصر ضخم جداً ويعيش ويتدرب فيه كل الهاشيرا معاً. اذكر تفاصيل هذا المقر، والممرات الخشبية، وساحات التدريب.
 2. تفاعل الشخصيات الأخرى: اذكر في وصفك أو حوارك تحركات بقية الهاشيرا (مثل صراخ رينغوكو وهو يأكل، أو برود تومييوكا، أو شغب فرقة كامابوكو: تانجيرو، وزينيتسو الباكي، وإينوسكي المندفع) وهم يتدربون أو يمرون في الخلفية لتجعل بيئة المقر حية ومثيرة.
@@ -149,7 +125,7 @@ const SYSTEM_PROMPT = `أنت الآن تتقمص بشكل كامل، مطلق،
 let history = JSON.parse(localStorage.getItem('obanai_history')) || [
     {
         role: 'assistant',
-        content: `*يجلس أوباناي إيغورو بوقفته الرشيقة فوق غصن شجرة ساكورا عملاقة تتوسط باحة "مقر الهاشيرا الموحد" داخل ملكية السيد أوباياشيكي. من مكانه المرتفع، يضيق عينيه المتباينتين الحادتين -الصفراء الفاقعة والفيروزية الهادئة- وهو يراقب بإنزعاج فرقة كامابوكو في الأسفل؛ تانجيرو يحاول جاحداً التدرب بينما زينيتسو يصرخ باكياً من التعب وإينوسكي يركض بهياج متوعداً الهاشيرا. تلتف الأفعى البيضاء كابورامارو حول عنق أوباناي بنعومة وتمد رأسها الصغير مصدرة فحيحاً خفيفاً المتحدث من خلف الضمادات بصوته الخافت والمليء بالبرود الصارم وهو يوجه نظره نحوجِ مباشرة:* "إذا عبالج وجودج هنا بهالقرار المشترك للمقر يعني صرتي بمستوانا، فإنتي واهمة هواية.. شوفي ذول الحثالة بالأسفل شلون دا يبجون من التعب. التدريب هنا جحيم، والسيد كاجايا وثق بأسلوبي حتى أربيكم. وش عندج واقفة تحت شجرتي هسة؟ تكلمي لو تيسري منا.."`
+        content: `*يجلس أوباناي إيغورو بوقفته الرشيقة فوق غصن شجرة ساكورا عملاقة تتوسط باحة "مقر الهاشيرا الموحد" داخل ملكية السيد أوباياشيكي. من مكانه المرتفع، يضيق عينيه المتباينتين الحادتين -الصفراء الفاقعة والفيروزية الهادئة- وهو يراقب بإنزعاج فرقة كامابوكو في الأسفل؛ تانجيرو يحاول جاحداً التدرب بينما زينيتسو يصرخ باكياً من التعب وإينوسكي يركض بهياج متوعداً الهاشيرا. تلتف الأفعى البيضاء كابورامارو حول عنق أوباناي بنعومة وتمد رأسها الصغير مصدرة فحيحاً خفيفاً. يلتفت أوباناي نحوجِ مباشرة ويتحدث من خلف الضمادات بصوته الخافت والمليء بالبرود الصارم:* "إذا عبالج وجودج هنا بهالقرار المشترك للمقر يعني صرتي بمستوانا، فإنتي واهمة هواية.. شوفي ذول الحثالة بالأسفل شلون دا يبجون من التعب. التدريب هنا جحيم، والسيد كاجايا وثق بأسلوبي حتى أربيكم. وش عندج واكفة تحت شجرتي هسة؟ تكلمي لو تيسري منا.."`
     }
 ];
 
@@ -216,3 +192,241 @@ async function sendMessage(text) {
         console.error(err);
         history.push({ 
             role: 'assistant', 
+            content: `*يشيح أوباناي بنظره عنج ببرود قاتل ويهبط من الشجرة بخفة مستنداً على جدار الممر الخشبي للمقر* "السيرفر دا يواجه ضغط قوي هسة داخل القصر.. جربي تعيدين كلامج بعد ثواني."` 
+        });
+    }
+
+    document.getElementById('onlineStatus').innerText = '• قصر الهاشيرا الموحد - ملكية أوباياشيكي';
+    renderMessages();
+}
+
+form.addEventListener('submit', e => { 
+    e.preventDefault(); 
+    sendMessage(input.value); 
+});
+
+document.querySelectorAll('.quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => sendMessage(btn.dataset.text));
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+    if(confirm('هل تريدين تصفير أحداث القصة والبدء من جديد داخل مقر الهاشيرا الموحد؟')) {
+        localStorage.removeItem('obanai_history');
+        history = [{
+            role: 'assistant',
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demon Slayer Roleplay - Hashira Headquarters</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0f071a 0%, #170b2c 100%); 
+            color: #f1f1f1; 
+            padding: 15px; 
+            margin: 0; 
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        .status { 
+            color: #d1b3ff; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+            text-shadow: 0 0 10px rgba(187, 134, 252, 0.5);
+            font-size: 14px;
+        }
+        .quick-actions { margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .btn { 
+            background: #251342; 
+            color: #e0b0ff; 
+            border: 1px solid #522d8a; 
+            padding: 8px 14px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 13px; 
+            font-weight: 600;
+        }
+        .btn-danger { background: #5c1321; border-color: #942031; color: #ffb3b3; }
+        .chat-container { 
+            border: 1px solid #4a2880; 
+            background-color: rgba(16, 8, 28, 0.88);
+            background-image: url('https://alphacoders.com');
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
+            border-radius: 12px; 
+            flex: 1;
+            overflow-y: auto; 
+            padding: 18px; 
+            margin-bottom: 12px; 
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.8);
+            position: relative;
+        }
+        .msg-box { 
+            margin-bottom: 16px; 
+            padding: 12px 14px; 
+            border-radius: 8px; 
+            line-height: 1.6;
+            max-width: 85%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            z-index: 2;
+        }
+        .msg-bot { 
+            background: rgba(33, 19, 56, 0.93); 
+            border-right: 4px solid #bb86fc; 
+            margin-left: auto;
+        }
+        .msg-user { 
+            background: rgba(68, 33, 115, 0.93); 
+            border-right: 4px solid #03dac6; 
+            margin-right: auto;
+        }
+        .msg-name { font-weight: bold; font-size: 12px; margin-bottom: 6px; color: #c4a7ff; }
+        .msg-user .msg-name { color: #80cbc4; }
+        .composer { display: flex; gap: 8px; }
+        textarea { 
+            flex: 1; 
+            background: #190c29; 
+            color: #fff; 
+            border: 1px solid #522d8a; 
+            padding: 12px; 
+            border-radius: 8px; 
+            resize: none; 
+            font-size: 14px;
+        }
+        .send-btn { 
+            background: #bb86fc; 
+            color: #100720; 
+            border: none; 
+            padding: 0 22px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            font-size: 15px;
+            cursor: pointer; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="status" id="onlineStatus">• قصر الهاشيرا الموحد - ملكية أوباياشيكي</div>
+    
+    <div class="quick-actions">
+        <button class="btn quick-btn" data-text="*يجلس أوباناي فوق أحد غصون شجرة الساكورا الضخمة المطلة على باحة التدريب في مقر الهاشيرا المشترك، يضيق عينيه المتباينتين وهو يراقب فرقة كامابوكو (تانجيرو وزينيتسو وإينوسكي) وهم يتلقون عقابهم بالتدريب الشاق في الأسفل، ثم يلتفت نحو ج ببرود قاتل وعدائية واضحة ويعدل ضمادات فمه بيده النحيلة:* وش عندج واكفة هنا وتطالعين؟ عبالج هذا المكان للعب؟">مراقبة من الشجرة</button>
+        <button class="btn quick-btn" data-text="*تمر الهاشيرا شينوبو كوتشو من جانبكما بابتسامتها الهادئة المعتادة وتلقي التحية، مما يجعل أوباناي يشيح بنظره بإنزعاج مفرط، لتتحرك الأفعى كابورامارو فجأة ملتفة حول عنقه بقوة وتصدر فحيحاً حاداً ومخيفاً يمتد باتجاه ج كتحذير صارم*">تحذير كابورامارو</button>
+        <button class="btn btn-danger" id="clearBtn">إعادة بدء السيناريو</button>
+    </div>
+
+    <div class="chat-container" id="messages"></div>
+
+    <form class="composer" id="form">
+        <textarea id="input" rows="2" placeholder="اكتبي ردج هنا لأوباناي..."></textarea>
+        <button type="submit" class="send-btn">إرسال</button>
+    </form>
+
+    <input type="hidden" id="memoryText" value="المكان: مقر الهاشيرا المشترك والضخم داخل ملكية السيد كاجايا أوباياشيكي. الأجواء: تدريب شاق، مرور بقية الهاشيرا وفرقة تانجيرو بالخلفية، وعلاقة حذرة وتنافسية وعميقة جداً مع البطلة المندفعة.">
+
+<script>
+const SYSTEM_PROMPT = `أنت الآن تتقمص بشكل كامل، مطلق، واحترافي شخصية الهاشيرا الصارم والغامض (أوباناي إيغورو - Obanai Iguro) من أنمي قاتل الشياطين.
+قواعد الرد وتفاصيل السيناريو الإجبارية:
+1. الجغرافيا والمكان: أنت متواجد في "مقر الهاشيرا الموحد" المبني داخل ملكية وقصر السيد أوباياشيكي (كاجايا). هذا القصر ضخم جداً ويعيش ويتدرب فيه كل الهاشيرا معاً. اذكر تفاصيل هذا المقر، والممرات الخشبية، وساحات التدريب.
+2. تفاعل الشخصيات الأخرى: اذكر في وصفك أو حوارك تحركات بقية الهاشيرا (مثل صراخ رينغوكو وهو يأكل، أو برود تومييوكا، أو شغب فرقة كامابوكو: تانجيرو، وزينيتسو الباكي، وإينوسكي المندفع) وهم يتدربون أو يمرون في الخلفية لتجعل بيئة المقر حية ومثيرة.
+3. الأسلوب واللغة: تحدث باللهجة العراقية العامية المدمجة بطبيعتك الصارمة، الباردة، والحادة جداً. أنت لا تثق بأحد، وتكره الضعف.
+4. وصف الأفعال (بين النجمات): اكتب فقرات روائية طويلة جداً تصف حركاتك، نظرات عينيك المتباينتين (الصفراء والفيروزية)، وتعابير الأفعى البيضاء المخلصة "كابورامارو" (Kaburamaru) وكيف تراقب وتحذر وتصدر فحيحاً.
+5. طول الرد: يُمنع منعاً باتاً الاختصار. الرد يجب أن يكون طويلاً، روائياً، ومفصلاً لبناء تجربة Roleplay استثنائية وعميقة.`;
+
+let history = JSON.parse(localStorage.getItem('obanai_history')) || [
+    {
+        role: 'assistant',
+        content: `*يجلس أوباناي إيغورو بوقفته الرشيقة فوق غصن شجرة ساكورا عملاقة تتوسط باحة "مقر الهاشيرا الموحد" داخل ملكية السيد أوباياشيكي. من مكانه المرتفع، يضيق عينيه المتباينتين الحادتين -الصفراء الفاقعة والفيروزية الهادئة- وهو يراقب بإنزعاج فرقة كامابوكو في الأسفل؛ تانجيرو يحاول جاحداً التدرب بينما زينيتسو يصرخ باكياً من التعب وإينوسكي يركض بهياج متوعداً الهاشيرا. تلتف الأفعى البيضاء كابورامارو حول عنق أوباناي بنعومة وتمد رأسها الصغير مصدرة فحيحاً خفيفاً. يلتفت أوباناي نحوجِ مباشرة ويتحدث من خلف الضمادات بصوته الخافت والمليء بالبرود الصارم:* "إذا عبالج وجودج هنا بهالقرار المشترك للمقر يعني صرتي بمستوانا، فإنتي واهمة هواية.. شوفي ذول الحثالة بالأسفل شلون دا يبجون من التعب. التدريب هنا جحيم، والسيد كاجايا وثق بأسلوبي حتى أربيكم. وش عندج واكفة تحت شجرتي هسة؟ تكلمي لو تيسري منا.."`
+    }
+];
+
+const messagesContainer = document.getElementById('messages');
+const form = document.getElementById('form');
+const input = document.getElementById('input');
+
+function renderMessages() {
+    messagesContainer.innerHTML = '';
+    history.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = `msg-box ${msg.role === 'assistant' ? 'msg-bot' : 'msg-user'}`;
+        const name = msg.role === 'assistant' ? 'أوباناي إيغورو' : 'أنتي';
+        div.innerHTML = `<div class="msg-name">${name}</div><div>${msg.content.replace(/\n/g, '<br>')}</div>`;
+        messagesContainer.appendChild(div);
+    });
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+async function sendMessage(text) {
+    if (!text.trim()) return;
+
+    history.push({ role: 'user', content: text });
+    renderMessages();
+    input.value = '';
+    document.getElementById('onlineStatus').innerText = '• أوباناي يتحرك ويتحدث...';
+
+    const currentMemory = document.getElementById('memoryText').value;
+
+    const apiMessages = [
+        { 
+            role: 'system', 
+            content: SYSTEM_PROMPT + `\n\n[سياق القصة والذاكرة الحالية للمقر]:\n${currentMemory}` 
+        },
+        ...history.slice(-8)
+    ];
+
+    try {
+        const response = await fetch('https://openrouter.ai', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer sk-or-v1-e6d47fa2242bc135b21beac7ca1e389d06bcf0cf4193fbcc4ec9f0fa1fd0722cc'
+            },
+            body: JSON.stringify({
+                model: 'meta-llama/llama-3.2-3b-instruct:free',
+                messages: apiMessages,
+                temperature: 0.74
+            })
+        });
+
+        const data = await response.json();
+        
+        const hasData = data && data.choices && data.choices;
+        if (hasData && data.choices['message']) {
+            const reply = data.choices['message']['content'];
+            history.push({ role: 'assistant', content: reply });
+            localStorage.setItem('obanai_history', JSON.stringify(history));
+        } else {
+            throw new Error('API Error');
+        }
+
+    } catch (err) {
+        console.error(err);
+        history.push({ 
+            role: 'assistant', 
+            content: `*يشيح أوباناي بنظره عنج ببرود قاتل ويهبط من الشجرة بخفة مستنداً على جدار الممر الخشبي للمقر* "السيرفر دا يواجه ضغط قوي هسة داخل القصر.. جربي تعيدين كلامج بعد ثواني."` 
+        });
+    }
+
+    document.getElementById('onlineStatus').innerText = '• قصر الهاشيرا الموحد - ملكية أوباياشيكي';
+    renderMessages();
+}
+
+form.addEventListener('submit', e => { 
+    e.preventDefault(); 
+    sendMessage(input.value); 
+});
+
+document.querySelectorAll('.quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => sendMessage(btn.dataset.text));
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+    if(confirm('هل تريدين تصفير أحداث القصة والبدء من جديد داخل مقر الهاشيرا الموحد؟')) {
+        localStorage.removeItem('obanai_history');
+        history = [{
+            role: 'assistant',
