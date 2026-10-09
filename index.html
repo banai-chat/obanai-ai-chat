@@ -1,12 +1,3 @@
-
-        const data = await response.json();
-        
-        if (data.choices && data.choices[0] && data.choices[0].message) {
-            const reply = data.choices[0].message.content;
-            
-            // إضافة رد البوت للسجل
-            history.push({ role: 'assistant', content: reply });
-            
-            // حفظ السجل بالاسم الصحيح الموحد المتطابق مع الـ 23 و 88
-            localStorage.setItem('obanai_history', JSON.stringify(history));
-        } else {
+        const hasData = data && data.choices && data.choices[0];
+        if (hasData && data.choices[0]['message']) {
+            const reply = data.choices[0]['message']['content'];
