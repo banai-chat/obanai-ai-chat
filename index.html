@@ -90,11 +90,11 @@ async function sendMessage(text) {
     document.getElementById('onlineStatus').innerText = '• أوباناي يفكر...';
 
     const currentMemory = document.getElementById('memoryText').value;
-
-    const apiMessages = [
-        { 
-            role: 'system', 
-            content: SYSTEM_PROMPT + `\n\n[سياق القصة الحالي والذاكرة المستمرة]:\n${currentMemory}` 
+ 
+                  const apiMessages = [
+        {
+            role: 'system',
+            content: SYSTEM_PROMPT + `\n\n[سياق القصة الحالي والذاكرة المستمرة]:\n${currentMemory}`
         },
         ...history.slice(-8)
     ];
