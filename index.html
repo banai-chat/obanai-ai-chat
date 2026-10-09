@@ -1,3 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obanai Chat</title>
+    <style>
+        /* يمكنك وضع تنسيقات الـ CSS هنا إذا كانت لديك */
+        body { font-family: sans-serif; background: #121212; color: white; padding: 20px; }
+        .msg { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .bot { background: #1e1e1e; }
+        .user { background: #2a2a2a; text-align: right; }
+        .quick-btn { margin: 5px; padding: 8px; background: #333; color: white; border: none; cursor: pointer; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #222; padding: 20px; border: 1px solid #444; }
+        .modal.show { display: block; }
+    </style>
+</head>
+<body>
+
+    <div id="onlineStatus">• متصل بالذكاء</div>
+    
+    <div>
+        <button class="quick-btn" data-text="*أسأل عن الأفعى ترفع رأسها بثقة وتقول بلهجة حازمة*">أسأل عن الأفعى</button>
+        <button class="quick-btn" data-text="*أرد بثقة*">أرد بثقة</button>
+        <button class="quick-btn" data-text="*تومئ برأسها بهدوء*">تومئ برأسها بهدوء</button>
+        <button id="clearBtn">بدء قصة جديدة</button>
+    </div>
+
+    <div id="messages"></div>
+
+    <form class="composer" id="form">
+        <textarea id="input" rows="1" placeholder="...اكتبي ردج لأوباناي" autocomplete="off"></textarea>
+        <button type="submit" class="send">إرسال</button>
+    </form>
+
+    <button id="memoryBtn" onclick="document.getElementById('modal').classList.add('show')">ذاكرة القصة</button>
+
+    <div class="modal" id="modal">
+        <div class="sheet">
+            <h2>🐍 ذاكرة القصة والتحكم </h2>
+            <p>تم ربط أوباناي بنظام ذكاء اصطناعي حقيقي. يمكنك كتابة ملخص أو ملاحظات لتوجيه تصرفاته بشكل مستمر.</p>
+            <label for="memoryText">ملاحظات لتوجيه أسلوب الشخصية:</label>
+            <textarea id="memoryText">المكان: مقر فيلق قاتلي الشياطين. العلاقة: بداية التعارف والحذر. أوباناي شخصية باردة، صارمة، حادة الملاحظة، يكره الضعف، شديد الولاء لكاغايا، ويتكلم باللهجة العراقية المدمجة بأفعال حادة. له المقتبسة من الأنمي باستخدام النجمات *وصف الفعل*</textarea>
+            <div class="actions">
+                <button class="primary" id="saveMemory" onclick="document.getElementById('modal').classList.remove('show')">حفظ الذاكرة</button>
+                <button id="closeModal" onclick="document.getElementById('modal').classList.remove('show')">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+const SYSTEM_PROMPT = `أنت الآن تتقمص بشكل كامل ومطلق شخصية هاشيرا الأفعى من أنمي (أوباناي إيغورو - Obanai Iguro) في قاتل الشياطين.
+
+قواعد الأسلوب والردود:
+1. تحدث باللهجة العراقية العامية بشكل طبيعي ومدمج مع طبيعة شخصيتك الباردة والصارمة.
+2. يجب أن تتضمن ردودك أوصافاً روائية وتعبيرية دقيقة ومفصلة لأفعالك وتحركاتك وحركات الأفعى "كابورامارو" باستخدام النجمات، مثل: *ينظر إليك بحذر وهو يضيق عينيه، بينما تتحرك الأفعى البيضاء حول عنقه وتصدر فحيحاً خفيفاً*.
+3. إجاباتك يجب أن تكون مفصلة، طويلة، ومثيرة للاهتمام لبناء سيناريو تقمص أدوار (Roleplay) ممتع وعميق. لا تقتصر ردودك على جملة واحدة أبداً.
+4. طبعك: حذر، حاد، يكره الشخصيات الضعيفة أو التي تشتكي كثيراً، يضع فواصل وحدود واضحة في الكلام، غامض ومخلص جداً.`;
+
+let history = JSON.parse(localStorage.getItem('obanai_history')) || [
+    {
+        role: 'assistant',
+        content: `*وقف أوباناي قرب أحد الأعمدة في مقر الفيلق، وكابورامارو ملتف حول كتفيه. رفع عينيه نحوتي الجد* "وش بنظرة حذرة وباردة وهو يتكلم بصوت خافت وصارم: إذا ناوية تنضمين للفيلق، لا تتوقعين أحد يتساهل وياج. الثقة هنا تنبني بالمواقف، مو بكلمة وحدة.."`
+    }
+];
+
+let memory = localStorage.getItem('obanai_memory') || document.getElementById('memoryText').value;
+
+const messagesContainer = document.getElementById('messages');
+const form = document.getElementById('form');
+const input = document.getElementById('input');
+
+function renderMessages() {
+    messagesContainer.innerHTML = '';
+    history.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = `msg ${msg.role === 'assistant' ? 'bot' : 'user'}`;
+        div.innerHTML = `<div class="name">${msg.role === 'assistant' ? 'أوباناي إيغورو' : 'أنتي'}</div><div>${msg.content.replace(/\n/g, '<br>')}</div>`;
+        messagesContainer.appendChild(div);
+    });
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+async function sendMessage(text) {
+    if (!text.trim()) return;
+
+    history.push({ role: 'user', content: text });
+    renderMessages();
+    input.value = '';
+    document.getElementById('onlineStatus').innerText = '• أوباناي يفكر...';
+
+    const currentMemory = document.getElementById('memoryText').value;
+
+    const apiMessages = [
+        { 
+            role: 'system', 
+            content: SYSTEM_PROMPT + `\n\n[سياق القصة الحالي والذاكرة المستمرة]:\n${currentMemory}` 
+        },
+        ...history.slice(-8)
+    ];
+
+    try {
+        const response = await fetch('https://openrouter.ai', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer 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'
+            },
+            body: JSON.stringify({
+                model: 'meta-llama/llama-3.2-3b-instruct:free',
+                messages: apiMessages,
+                temperature: 0.7
+            })
+        });
+
+        const data = await response.json();
+        
         const hasData = data && data.choices && data.choices[0];
         if (hasData && data.choices[0]['message']) {
             const reply = data.choices[0]['message']['content'];
+            history.push({ role: 'assistant', content: reply });
+            localStorage.setItem('obanai_history', JSON.stringify(history));
+        } else {
+            throw new Error('Invalid response structure');
+        }
+
+    } catch (err) {
+        console.error(err);
+        history.push({ 
+            role: 'assistant', 
+            content: `*يصمت أوباناي قليلاً ويبتعد خطوة للوراء وهو يعقد يديه* "يبدو أن هناك خطأ ما في الاتصال حالياً، حاولي مجدداً لاحقاً..."` 
+        });
+    }
+
+    document.getElementById('onlineStatus').innerText = '• متصل بالذكاء';
+    renderMessages();
+}
+
+form.addEventListener('submit', e => { 
+    e.preventDefault(); 
+    sendMessage(input.value); 
+});
+
+input.addEventListener('keydown', e => { 
+    if (e.key === 'Enter' && !e.shiftKey) { 
+        e.preventDefault(); 
+        form.dispatchEvent(new Event('submit')); 
+    } 
+});
+
+document.querySelectorAll('.quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => sendMessage(btn.dataset.text));
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+    if(confirm('هل تريد مسح سجل المحادثة والبدء من جديد؟')) {
+        localStorage.removeItem('obanai_history');
+        history = [{
+            role: 'assistant',
+            content: `*وقف أوباناي قرب أحد الأعمدة في مقر الفيلق، وكابورامارو ملتف حول كتفيه. رفع عينيه نحوتي الجد* "وش بنظرة حذرة وباردة وهو يتكلم بصوت خافت وصارم: إذا ناوية تنضمين للفيلق، لا تتوقعين أحد يتساهل وياج. الثقة هنا تنبني بالمواقف، مو بكلمة وحدة.."`
+        }];
+        renderMessages();
+    }
+});
+
+// تشغيل الرندر الأولي للمحادثة عند فتح الصفحة
+renderMessages();
+</script>
+</body>
+</html>
