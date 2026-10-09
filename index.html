@@ -49,10 +49,9 @@ async function sendMessage(text) {
     input.value = '';
     document.getElementById('onlineStatus').innerText = '● أوباناي يفكر...';
     
-    // تجهيز الملف المرسل للذكاء الاصطناعي المجاني والسريع عبر خلية مخصصة
     const apiMessages = [
         {role: 'system', content: SYSTEM_PROMPT + `\nسياق القصة الحالي والذاكرة المستمرة: ${memory}`},
-        ...history.slice(-8) // إرسال آخر 8 رسائل للحفاظ على تدفق الحوار وسرعته
+        ...history.slice(-8)
     ];
 
     try {
@@ -60,7 +59,7 @@ async function sendMessage(text) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer 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' // اتصال سحابي عام ومفتوح للمشروع
+                'Authorization': 'Bearer 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'
             },
             body: JSON.stringify({
                 model: 'meta-llama/llama-3.2-3b-instruct:free',
@@ -87,7 +86,10 @@ document.querySelectorAll('.quick-btn').forEach(btn => btn.addEventListener('cli
 document.getElementById('clearBtn').addEventListener('click', () => {
     if(confirm('هل تريد مسح سجل المحادثة والبدء من جديد؟')) {
         localStorage.removeItem('obanai_history');
-        history = [{role: 'assistant', content: `*وقف أوباناي قرب أحد الأعمدة في مقر الفيلق، وكابورامارو ملتف حول كتفيه. رفع عينيه نحوچ بنظرة حذرة وباردة وهو يتكلم بصوت خافت وصارم:*\n\n«إنتي الجديدة؟ إذا ناوية تتضمين للفيلق, لا تتوقعين أحد يتساهل وياچ. الثقة هنا تنبني بالمواقف، مو بكلمة وحدة.»`}];
+        history = [{role: 'assistant', content: `*وقف أوباناي قرب أحد الأعمدة في مقر الفيلق، وكابورامارو ملتف حول كتفيه. رفع عينيه نحوچ بنظرة حذرة وباردة وهو يتكلم بصوت خافت وصارم:*\n\n«إنتي الجديدة؟ إذا ناوية تتضمين للفيلق، لا تتوقعين أحد يتساهل وياچ. الثقة هنا تنبني بالمواقف، مو بكلمة وحدة.»`}];
         renderMessages();
     }
 });
+
+document.getElementById('memoryBtn').addEventListener('click', () => { memoryText.value = memory; modal.classList.add('show'); });
+document.getElementById('closeModal').addEventListener('click', () => modal.classList.remove('show'));
