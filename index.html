@@ -157,8 +157,9 @@ async function sendMessage(text) {
 
     const apiMessages = [
         { 
-                        content: SYSTEM_PROMPT + `\n\n[سياق القصة والذاكرة الحالية للمقر المشترك]:\n${currentMemory}`
-
+            role: 'system', 
+            content: SYSTEM_PROMPT + `\n\n[سياق القصة والذاكرة الحالية للمقر المشترك]:\n${currentMemory}` 
+        },
         ...history.slice(-8)
     ];
 
