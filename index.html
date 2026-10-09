@@ -68,7 +68,7 @@ async function sendMessage(text) {
             })
         });
         const data = await response.json();
-        const reply = data.choices[0].message.content;
+        const reply = data.choices.message.content;
         history.push({role: 'assistant', content: reply});
         localStorage.setItem('obanai_history', JSON.stringify(history));
     } catch (err) {
