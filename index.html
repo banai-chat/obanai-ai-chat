@@ -169,8 +169,8 @@ async function sendMessage(text) {
         ...history.slice(-8)
     ];
 
-    try {
-        const response = await fetch('https://openrouter.ai', {
+        try { const response = await fetch('https://openrouter.ai', {
+
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
