@@ -3,53 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obanai Chat</title>
+    <title>Obanai Chat - Demon Slayer Edition</title>
     <style>
-        body { font-family: sans-serif; background: #121212; color: white; padding: 15px; margin: 0; }
-        .status { color: #4caf50; font-weight: bold; margin-bottom: 15px; }
-        .quick-actions { margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 5px; }
-        .btn { background: #222; color: #fff; border: 1px solid #444; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 14px; }
-        .btn-danger { background: #b71c1c; border-color: #7f0000; }
-        .chat-container { border: 1px solid #333; background: #1a1a1a; border-radius: 8px; height: 60vh; overflow-y: auto; padding: 15px; margin-bottom: 15px; }
-        .msg-box { margin-bottom: 15px; padding: 10px; border-radius: 6px; }
-        .msg-bot { background: #252525; border-right: 4px solid #4caf50; }
-        .msg-user { background: #2e3b4e; border-right: 4px solid #2196f3; }
-        .msg-name { font-weight: bold; font-size: 13px; margin-bottom: 5px; color: #bbb; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #120a21 0%, #1a0f2e 100%); 
+            color: #f1f1f1; 
+            padding: 15px; 
+            margin: 0; 
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        .status { 
+            color: #bb86fc; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+            text-shadow: 0 0 10px rgba(187, 134, 252, 0.4);
+            font-size: 15px;
+        }
+        .quick-actions { margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .btn { 
+            background: #2d1b4e; 
+            color: #e0b0ff; 
+            border: 1px solid #5c3b8e; 
+            padding: 8px 14px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 13px; 
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn:hover { background: #3d256a; border-color: #bb86fc; }
+        .btn-danger { background: #6a1b29; border-color: #a82c35; color: #ffb3b3; }
+        .btn-danger:hover { background: #821c2a; border-color: #f44336; }
+        
+        .chat-container { 
+            border: 1px solid #42286c; 
+            background-color: rgba(22, 13, 38, 0.82);
+            /* إضافة صورة خلفية تضم كل شخصيات أنمي قاتل الشياطين ومدمجة بجمالية مع اللون البنفسجي */
+            background-image: url('https://alphacoders.com');
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
+            border-radius: 12px; 
+            flex: 1;
+            overflow-y: auto; 
+            padding: 18px; 
+            margin-bottom: 12px; 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+        }
+        .msg-box { 
+            margin-bottom: 16px; 
+            padding: 12px 14px; 
+            border-radius: 8px; 
+            line-height: 1.6;
+            max-width: 85%;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+        }
+        .msg-bot { 
+            background: rgba(37, 24, 61, 0.9); 
+            border-right: 4px solid #bb86fc; 
+            margin-left: auto;
+        }
+        .msg-user { 
+            background: rgba(74, 38, 122, 0.9); 
+            border-right: 4px solid #03dac6; 
+            margin-right: auto;
+        }
+        .msg-name { font-weight: bold; font-size: 12px; margin-bottom: 6px; color: #b39ddb; }
+        .msg-user .msg-name { color: #80cbc4; }
+        
         .composer { display: flex; gap: 8px; }
-        textarea { flex: 1; background: #222; color: white; border: 1px solid #444; padding: 10px; border-radius: 5px; resize: none; }
-        .send-btn { background: #4caf50; color: white; border: none; padding: 0 20px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        textarea { 
+            flex: 1; 
+            background: #1f1235; 
+            color: #fff; 
+            border: 1px solid #5c3b8e; 
+            padding: 12px; 
+            border-radius: 8px; 
+            resize: none; 
+            font-size: 14px;
+        }
+        textarea:focus { outline: none; border-color: #bb86fc; }
+        .send-btn { 
+            background: #bb86fc; 
+            color: #120a21; 
+            border: none; 
+            padding: 0 22px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            font-size: 15px;
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        .send-btn:hover { background: #d7b5ff; }
     </style>
 </head>
 <body>
 
-    <div class="status" id="onlineStatus">• متصل بأوباناي</div>
+    <div class="status" id="onlineStatus">• متصل بالهاشيرا أوباناي</div>
     
     <div class="quick-actions">
-        <button class="btn quick-btn" data-text="*ينظر إليك بطرف عينه ويعدل كمامته* وش تبين؟">حوار حذر</button>
-        <button class="btn quick-btn" data-text="*تتحرك الأفعى كابورامارو وتصدر فحيحاً*">حركة الأفعى</button>
-        <button class="btn btn-danger" id="clearBtn">إعادة البدء</button>
+        <button class="btn quick-btn" data-text="*ينظر إليج بنظرة حادة وصارمة من فوق أغصان الشجرة وهو يعدل كمامته ببرود تام* وش عندج جاية لهنا؟">حوار بارد</button>
+        <button class="btn quick-btn" data-text="*تتحرك الأفعى البيضاء كابورامارو حول عنقه بخفة وتصدر فحيحاً مخيفاً وهي تضيق عينيها الحمراء نحوج*">تهديد الأفعى</button>
+        <button class="btn btn-danger" id="clearBtn">إعادة بدء القصة</button>
     </div>
 
     <div class="chat-container" id="messages"></div>
 
     <form class="composer" id="form">
-        <textarea id="input" rows="2" placeholder="اكتبي ردج هنا..."></textarea>
+        <textarea id="input" rows="2" placeholder="اكتبي ردج هنا لأوباناي..."></textarea>
         <button type="submit" class="send-btn">إرسال</button>
     </form>
 
-    <input type="hidden" id="memoryText" value="المكان: مقر فيلق قاتلي الشياطين. أوباناي شخصية باردة، صارمة، ويتكلم باللهجة العراقية المدمجة بأفعال حادة باستخدام النجمات *وصف الفعل*">
+    <input type="hidden" id="memoryText" value="المكان: حديقة الفراشة ومقر الفيلق. العلاقة: قصة حب صامتة وبداية حوار روائي عميق وتنافسي ومفصل جداً مع البطلة.">
 
 <script>
-const SYSTEM_PROMPT = `أنت الآن تتقمص بشكل كامل ومطلق شخصية هاشيرا الأفعى (أوباناي إيغورو) من أنمي قاتل الشياطين.
-قواعد الردود:
-1. تحدث باللهجة العراقية العامية المدمجة مع طبيعتك الباردة والصارمة جداً.
-2. استخدم النجمات لبيان تعابيرك وحركات الأفعى كابورامارو بالتفصيل، مثل: *يضيق عينيه وينظر بحذر*.
-3. إجاباتك يجب أن تكون مفصلة، طويلة، ومثيرة للاهتمام لبناء سيناريو Roleplay ممتع. لا تختصر أبداً.`;
+const SYSTEM_PROMPT = `أنت الآن تتقمص بشكل كامل ومطلق وبدون الخروج عن النص شخصية الهاشيرا الصارم (أوباناي إيغورو - Obanai Iguro) من أنمي قاتل الشياطين.
+
+قواعد الرد الروائي والدرامي الصارمة:
+1. اللغة والأسلوب: تحدث باللهجة العراقية العامية المدمجة بعباراته الصارمة، الباردة، والحادة جداً. أسلوبك غامض ولا يثق بأحد بسهولة.
+2. تفاصيل الأفعال (بين النجمات): في كل رد وبدون استثناء، يجب أن تكتب وصفاً روائياً طويلاً ومكثفاً جداً لحركات أوباناي وتعبيرات وجهه المخفية خلف الكمامة، ووصف دقيق لتصرفات وحركات أفعاه البيضاء المخلصة "كابورامارو" (Kaburamaru) وكيف تتفاعل مع الكلام (فحيح، نظرات حادة، التفاف حول الرقبة).
+3. طول وتفاصيل الرد: يُمنع منعاً باتاً كتابة ردود قصيرة أو مختصرة. يجب أن يكون الرد عبارة عن فقرات مفصلة تحتوي على حوار مثير، وتحليل نفسي للشخصية المقابلة، ووصف للبيئة المحيطة لتوفير تجربة Roleplay احترافية وممتعة وعميقة جداً.`;
 
 let history = JSON.parse(localStorage.getItem('obanai_history')) || [
     {
         role: 'assistant',
-        content: `*وقف أوباناي قرب أحد الأعمدة في مقر الفيلق، وكابورامارو ملتف حول كتفيه. رفع عينيه بنظرة حذرة وباردة وهو يتكلم بصوت خافت وصارم:* "إذا ناوية تنضمين للفيلق، لا تتوقعين أحد يتساهل وياج. الثقة هنا تنبني بالمواقف، مو بكلامج هذا.."`
+        content: `*يقف أوباناي مستنداً بجسده على جذع شجرة ضخمة في باحة الفيلق، بينما الأفعى البيضاء كابورامارو تلتف ببطء حول كتفه وتصدر فحيحاً هادئاً. ينزل عينيه المتباينتين -واحدة صفراء والأخرى فيروزية- نحو ج بنظرة باردة تخترق الهدوء، ويتحدث من خلف ضمادات فمه بصوت خافت وحاد:* "إذا عبالج التدريب هنا سهل أو جايين نتسلى، فإنتي غلطانة هواية.. هنا الغلطة الأولى هي الأخيرة. وش عندج واكفة يمي هسة؟ تكلمي لو روحي منا.."`
     }
 ];
 
@@ -75,14 +157,14 @@ async function sendMessage(text) {
     history.push({ role: 'user', content: text });
     renderMessages();
     input.value = '';
-    document.getElementById('onlineStatus').innerText = '• أوباناي يفكر...';
+    document.getElementById('onlineStatus').innerText = '• أوباناي يفكر ويتحرك...';
 
     const currentMemory = document.getElementById('memoryText').value;
 
     const apiMessages = [
         { 
             role: 'system', 
-            content: SYSTEM_PROMPT + `\n\n[الذاكرة]:\n${currentMemory}` 
+            content: SYSTEM_PROMPT + `\n\n[الذاكرة وسياق السيناريو الحالي]:\n${currentMemory}` 
         },
         ...history.slice(-8)
     ];
@@ -97,15 +179,15 @@ async function sendMessage(text) {
             body: JSON.stringify({
                 model: 'meta-llama/llama-3.2-3b-instruct:free',
                 messages: apiMessages,
-                temperature: 0.7
+                temperature: 0.72
             })
         });
 
         const data = await response.json();
         
-        const hasData = data && data.choices && data.choices[0];
-        if (hasData && data.choices[0]['message']) {
-            const reply = data.choices[0]['message']['content'];
+        const hasData = data && data.choices && data.choices;
+        if (hasData && data.choices['message']) {
+            const reply = data.choices['message']['content'];
             history.push({ role: 'assistant', content: reply });
             localStorage.setItem('obanai_history', JSON.stringify(history));
         } else {
@@ -116,11 +198,11 @@ async function sendMessage(text) {
         console.error(err);
         history.push({ 
             role: 'assistant', 
-            content: `*يصمت أوباناي قليلاً ويعقد يديه ببرود* "يبدو أن هناك مشكلة في الاتصال بالسيرفر حالياً.. حاولي مجدداً."` 
+            content: `*يعدل أوباناي من وقفته ببرود مفرط ويشيح بنظره عنج وهو يعقد يديه* "السيرفر دا يواجه ضغط وهناك مشكلة بالاتصال حالياً.. جربي ترسلين كلامج مرة ثانية بعد ثواني."` 
         });
     }
 
-    document.getElementById('onlineStatus').innerText = '• متصل بأوباناي';
+    document.getElementById('onlineStatus').innerText = '• متصل بالهاشيرا أوباناي';
     renderMessages();
 }
 
@@ -134,11 +216,11 @@ document.querySelectorAll('.quick-btn').forEach(btn => {
 });
 
 document.getElementById('clearBtn').addEventListener('click', () => {
-    if(confirm('مسح المحادثة؟')) {
+    if(confirm('هل تريدين مسح أحداث القصة الحالية والبدء من جديد؟')) {
         localStorage.removeItem('obanai_history');
         history = [{
             role: 'assistant',
-            content: `*وقف أوباناي قرب أحد الأعمدة في مقر الفيلق، وكابورامارو ملتف حول كتفيه. رفع عينيه بنظرة حذرة وباردة وهو يتكلم بصوت خافت وصارم:* "إذا ناوية تنضمين للفيلق، لا تتوقعين أحد يتساهل وياج. الثقة هنا تنبني بالمواقف، مو بكلامج هذا.."`
+            content: `*يقف أوباناي مستنداً بجسده على جذع شجرة ضخمة في باحة الفيلق، بينما الأفعى البيضاء كابورامارو تلتف ببطء حول كتفه وتصدر فحيحاً هادئاً. ينزل عينيه المتباينتين -واحدة صفراء والأخرى فيروزية- نحو ج بنظرة باردة تخترق الهدوء، ويتحدث من خلف ضمادات فمه بصوت خافت وحاد:* "إذا عبالج التدريب هنا سهل أو جايين نتسلى، فإنتي غلطانة هواية.. هنا الغلطة الأولى هي الأخيرة. وش عندج واكفة يمي هسة؟ تكلمي لو روحي منا.."`
         }];
         renderMessages();
     }
