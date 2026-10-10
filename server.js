@@ -10,11 +10,11 @@ app.use(express.static(__dirname));
 
 app.post("/api/chat", async (req, res) => {
   try {
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({
-        error: "OPENAI_API_KEY is not configured"
+        error: "GEMINI_API_KEY is not configured"
       });
     }
 
@@ -26,18 +26,30 @@ app.post("/api/chat", async (req, res) => {
       });
     }
 
+    const contents = messages
+      .filter(m => ["user", "assistant"].includes(m.role))
+      .map(m => ({
+        role: m.role === "assistant" ? "model" : "user",
+        parts: [{
+          text: typeof m.content === "string"
+            ? m.content
+            : JSON.stringify(m.content ?? "")
+        }]
+      }));
+
     const response = await fetch(
-      "https://api.openai.com/v1/chat/completions",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" +
+        encodeURIComponent(apiKey),
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
-          messages,
-          temperature: 0.74
+          contents,
+          generationConfig: {
+            temperature: 0.8
+          }
         })
       }
     );
@@ -45,17 +57,29 @@ app.post("/api/chat", async (req, res) => {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("OpenAI error:", data.error?.message);
+      console.error("Gemini error:", data.error?.message);
       return res.status(response.status).json({
-        error: data.error?.message || "OpenAI request failed"
+        error: data.error?.message || "Gemini request failed"
       });
     }
 
-    res.json(data);
+    const reply =
+      data.candidates?.[0]?.content?.parts
+        ?.map(p => p.text || "")
+        .join("") || "";
+
+    res.json({
+      choices: [{
+        message: {
+          role: "assistant",
+          content: reply
+        }
+      }]
+    });
   } catch (error) {
     console.error("Chat request failed:", error.message);
     res.status(500).json({
-      error: "Could not connect to OpenAI"
+      error: "Could not connect to Gemini"
     });
   }
 });
