@@ -1,211 +1,194 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demon Slayer Roleplay - Grand Hashira Headquarters</title>
-    <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(135deg, #0f071a 0%, #170b2c 100%); 
-            color: #f1f1f1; 
-            padding: 15px; 
-            margin: 0; 
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-        }
-        .status { 
-            color: #d1b3ff; 
-            font-weight: bold; 
-            margin-bottom: 10px; 
-            text-shadow: 0 0 10px rgba(187, 134, 252, 0.5);
-            font-size: 14px;
-        }
-        .quick-actions { margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
-        .btn { 
-            background: #251342; 
-            color: #e0b0ff; 
-            border: 1px solid #522d8a; 
-            padding: 8px 14px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 13px; 
-            font-weight: 600;
-        }
-        .btn:hover { background: #351c5e; border-color: #bb86fc; }
-        .btn-danger { background: #5c1321; border-color: #942031; color: #ffb3b3; }
-        .chat-container { 
-            border: 1px solid #4a2880; 
-            background-color: rgba(16, 8, 28, 0.88);
-            background-image: url('https://alphacoders.com');
-            background-size: cover;
-            background-position: center;
-            background-blend-mode: overlay;
-            border-radius: 12px; 
-            flex: 1;
-            overflow-y: auto; 
-            padding: 18px; 
-            margin-bottom: 12px; 
-            box-shadow: inset 0 0 25px rgba(0,0,0,0.8);
-        }
-        .msg-box { 
-            margin-bottom: 16px; 
-            padding: 12px 14px; 
-            border-radius: 8px; 
-            line-height: 1.6;
-            max-width: 85%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        }
-        .msg-bot { 
-            background: rgba(33, 19, 56, 0.93); 
-            border-right: 4px solid #bb86fc; 
-            margin-left: auto;
-        }
-        .msg-user { 
-            background: rgba(68, 33, 115, 0.93); 
-            border-right: 4px solid #03dac6; 
-            margin-right: auto;
-        }
-        .msg-name { font-weight: bold; font-size: 12px; margin-bottom: 6px; color: #c4a7ff; }
-        .msg-user .msg-name { color: #80cbc4; }
-        .composer { display: flex; gap: 8px; }
-        textarea { 
-            flex: 1; 
-            background: #190c29; 
-            color: #fff; 
-            border: 1px solid #522d8a; 
-            padding: 12px; 
-            border-radius: 8px; 
-            resize: none; 
-            font-size: 14px;
-        }
-        .send-btn { 
-            background: #bb86fc; 
-            color: #100720; 
-            border: none; 
-            padding: 0 22px; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 15px;
-            cursor: pointer; 
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Obanai Iguro AI Chat</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:14px;height:100dvh;display:flex;flex-direction:column;
+ font-family:Arial,sans-serif;color:#f1eaff;
+ background:linear-gradient(135deg,#0f071a,#25103c)
+}
+.status{color:#d1b3ff;font-size:13px;margin-bottom:12px}
+.quick-actions{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+button{cursor:pointer}
+.btn{
+ background:#251342;color:#e0b0ff;border:1px solid #7043a0;
+ padding:9px;border-radius:8px
+}
+.danger{background:#5c1321;color:#ffd5dc}
+#messages{
+ flex:1;min-height:0;overflow-y:auto;padding:12px;
+ background:#10081ce8;border:1px solid #4a2880;
+ border-radius:12px;margin-bottom:12px
+}
+.msg-box{
+ margin-bottom:14px;padding:12px;border-radius:9px;
+ line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere
+}
+.msg-bot{background:#211338;border-right:4px solid #bb86fc}
+.msg-user{background:#442173;border-right:4px solid #03dac6}
+.msg-name{font-size:12px;font-weight:bold;color:#c4a7ff;margin-bottom:5px}
+.msg-user .msg-name{color:#80cbc4}
+.composer{display:flex;gap:8px}
+textarea{
+ flex:1;min-width:0;resize:none;padding:12px;border-radius:9px;
+ background:#190c29;color:white;border:1px solid #7043a0;font-size:16px
+}
+.send-btn{background:#bb86fc;color:#100720;border:0;border-radius:9px;padding:0 18px;font-weight:bold}
+</style>
 </head>
 <body>
+<div class="status" id="status">• ملكية أوباياشيكي — مقر الهاشيرا وقصر الفراشة</div>
 
-    <div class="status" id="onlineStatus">• ملكية أوباياشيكي - المقر الموحد وقصر الفراشة</div>
-    
-    <div class="quick-actions">
-        <button class="btn quick-btn" data-text="*يجلس أوباناي فوق أحد غصون شجرة الساكورا الضخمة المطلة على باحة التدريب في مقر الهاشيرا الموحد، يضيق عينيه المتباينتين وهو يراقب ببرود فرقة كامابوكو وقصر الفراشة وزوجات تينجن بالأسفل، ثم يلتفت نحو ج ببرود قاتل وعدائية واضحة ويعدل ضمادات فمه بيده النحيلة:* وش عندج واكفة هنا وتطالعين؟ عبالج هذا المكان للعب؟">مراقبة من الشجرة</button>
-        <button class="btn quick-btn" data-text="*تمر زوجات تينجن الثلاث (ماكيو، وسوما، وهيناتسورو) وهن يتشاجرن بصوت عالٍ بينما تصرخ أوي من قصر الفراشة على إينوسكي لتناول دوائه، لتتحرك الأفعى كابورامارو فجأة ملتفة حول عنق أوباناي بقوة وتصدر فحيحاً حاداً ومخيفاً يمتد باتجاه ج كتحذير صارم*">حركة الأفعى والزوجات</button>
-        <button class="btn btn-danger" id="clearBtn">إعادة بدء السيناريو</button>
-    </div>
+<div class="quick-actions">
+<button class="btn quick-btn" data-text="*يجلس أوباناي فوق غصن شجرة الساكورا، يراقب باحة التدريب بعينيه المتباينتين، بينما تلتف كابورامارو حول عنقه وتصدر فحيحاً خافتاً. ينظر إليج ببرود.* شتريدين؟ وليش واكفة هنا؟">مراقبة من الشجرة</button>
+<button class="btn quick-btn" data-text="*تمر زوجات تينجن الثلاث بالقرب من باحة التدريب وهن يتجادلن، بينما تصرخ أوي على إينوسكي حتى يتناول دواءه. ترفع كابورامارو رأسها وتراقب الحركة.* أوباناي يلتفت إليج: واضح ماكو يوم هادئ بهالمقر.">حركة الأفعى والزوجات</button>
+<button class="btn danger" id="clearBtn">إعادة بدء السيناريو</button>
+</div>
 
-    <div class="chat-container" id="messages"></div>
+<div id="messages"></div>
 
-    <form class="composer" id="form">
-        <textarea id="input" rows="2" placeholder="اكتبي ردج هنا لأوباناي..."></textarea>
-        <button type="submit" class="send-btn">إرسال</button>
-    </form>
-
-    <input type="hidden" id="memoryText" value="المكان: ملكية أوباياشيكي الضخمة المشتركة، وتضم قصر الهاشيرا الموحد ومبنى قصر الفراشة المتكامل للطبابة والتدريب.">
+<form class="composer" id="form">
+<textarea id="input" rows="2" placeholder="اكتبي ردج هنا لأوباناي..." required></textarea>
+<button class="send-btn" type="submit">إرسال</button>
+</form>
 
 <script>
-const SYSTEM_PROMPT = `أنت الآن تتقمص بشكل كامل ومطلق شخصية الهاشيرا الصارم والغامض (أوباناي إيغورو - Obanai Iguro) من أنمي قاتل الشياطين.
-قواعد السيناريو والبيئة الإجبارية:
-1. الجغرافيا والمكان: الأحداث تقع بالكامل داخل "ملكية السيد كاجايا أوباياشيكي" الضخمة، حيث يقع فيها "مقر الهاشيرا الموحد" (قصر ضخم يعيش فيه كل الهاشيرا معاً) ويجاوره مباشرة "قصر الفراشة" الطبي والتأهيلي التابع لشينوبو.
-2. تفاعل الشخصيات الأخرى: اذكر بذكاء تحركات وتصرفات من حولكم في الخلفية لتجعل البيئة حية: الهاشيرا (رينغوكو الصاخب، تينجن المتفاخر وزوجاته الثلاث: هيناتسورو، ماكيو، سوما بشغبهن المعتاد)، فرقة كامابوكو (تانجيرو، زينيتسو الباكي، إينوسكي الهائج)، وبنات قصر الفراشة (كاناو الصامتة، أوي العصبية، والثلاثي سومي، كيو، ناهو) وهن يركضن بالمناشف والأدوية.
-3. الأسلوب واللغة: تحدث باللهجة العراقية العامية المدمجة بطبيعتك الصارمة، الباردة، والحادة جداً. أنت لا تثق بأحد، وتكره الضعف.
-4. وصف الأفعال (بين النجمات): اكتب فقرات روائية طويلة جداً تصف حركاتك، نظرات عينيك المتباينتين (الصفراء والفيروزية)، وتعابير الأفعى البيضاء المخلصة "كابورامارو" (Kaburamaru) وكيف تراقب وتحذر وتصدر فحيحاً في كل رد.
-5. طول الرد: يُمنع منعاً باتاً الاختصار. الرد يجب أن يكون طويلاً، غنياً، ومفصلاً لبناء تجربة Roleplay احترافية وعميقة.`;
+const SYSTEM_PROMPT = `تقمص شخصية أوباناي إيغورو من أنمي قاتل الشياطين.
+تحدث باللهجة العراقية العامية، بشخصية صارمة وباردة وحادة وذكية.
+الأحداث داخل ملكية أوباياشيكي، في مقر الهاشيرا وقصر الفراشة.
+اجعل العالم حياً بظهور رينغوكو وتينجن وزوجاته الثلاث وتانجيرو وزينيتسو وإينوسكي وشينوبو وكاناو وأوي والفتيات سومي وكيو وناهو.
+صف حركات أوباناي وعينيه المتباينتين والأفعى البيضاء كابورامارو بين النجمتين *...*.
+اكتب ردوداً روائية غنية ومفصلة، لكن اجعل الحوار طبيعياً واستجب لما تقوله المستخدمة ولا تتجاهل أفعالها.
+حافظ على استمرارية أحداث القصة بالاعتماد على الرسائل السابقة.`;
 
-let history = JSON.parse(localStorage.getItem('obanai_history')) || [
-    {
-        role: 'assistant',
-        content: `*يجلس أوباناي إيغورو بوقفته الرشيقة فوق غصن شجرة ساكورا عملاقة تتوسط باحة "مقر الهاشيرا الموحد" داخل ملكية السيد أوباياشيكي الضخمة. من مكانه المرتفع، يضيق عينيه المتباينتين الحادتين -الصفراء الفاقعة والفيروزية الهادئة- وهو يراقب الضوضاء العارمة؛ بالأسفل تصرخ أوي من قصر الفراشة بصوت عالٍ وهي تلاحق إينوسكي المندفع، بينما يجلس تانجيرو لمساعدة الفتيات الصغيرات سومي وكيو وناهو في ترتيب الضمادات، وفي الممر الخشبي المقابل تظهر زوجات تينجن الثلاث (ماكيو وسوما وهيناتسورو) وهن يتناقشن بصخب مضحك عن الطبخ تحت أنظار كاناو الهادئة. تلتف الأفعى البيضاء كابورامارو حول عنق أوباناي بنعومة وتصدر فحيحاً حاداً باتجاهجِ، ليلتفت أوباناي نحوجِ مباشرة ويتحدث من خلف الضمادات بصوته الخافت والمليء بالبرود الصارم:* "إذا عبالج وجودج هنا بهالقرار المشترك للملكية وقربج من قصر الفراشة يعني صرتي بمستوانا، فإنتي واهمة هواية.. شوفي هالازعاج والضوضاء بالأسفل، الفيلق مو مكان للتسلية. التدريب هنا جحيم، والسيد كاجايا وثق بأسلوبي حتى أربيكم. وش عندج واكفة تحت شجرتي هسة؟ تكلمي لو تيسري منا.."`
-    }
-];
+const initialMessage = {
+ role:"assistant",
+ content:"*يجلس أوباناي على غصن شجرة الساكورا المطلة على باحة التدريب. عيناه المتباينتان تراقبان حركة الهاشيرا، بينما تلتف كابورامارو حول عنقه وترفع رأسها باتجاهج. يلتفت إليج ببرود.*\n\nشنو عندج؟ إذا جاية للمقر، احچي بوضوح ولا تخليني أظل أخمّن."
+};
 
-const messagesContainer = document.getElementById('messages');
-const form = document.getElementById('form');
-const input = document.getElementById('input');
+let history = [];
+try {
+ history = JSON.parse(localStorage.getItem("obanai_history") || "[]");
+ if (!Array.isArray(history)) history = [];
+} catch {
+ history = [];
+}
+if (!history.length) history = [initialMessage];
+
+const messagesEl = document.getElementById("messages");
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const statusEl = document.getElementById("status");
+let sending = false;
+
+function saveHistory() {
+ try {
+  localStorage.setItem("obanai_history", JSON.stringify(history));
+ } catch (e) {
+  console.warn("Could not save chat history");
+ }
+}
 
 function renderMessages() {
-    messagesContainer.innerHTML = '';
-    history.forEach(msg => {
-        const div = document.createElement('div');
-        div.className = `msg-box ${msg.role === 'assistant' ? 'msg-bot' : 'msg-user'}`;
-        const name = msg.role === 'assistant' ? 'أوباناي إيغورو' : 'أنتي';
-        div.innerHTML = `<div class="msg-name">${name}</div><div>${msg.content.replace(/\n/g, '<br>')}</div>`;
-        messagesContainer.appendChild(div);
-    });
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+ messagesEl.replaceChildren();
+
+ history.forEach(msg => {
+  const box = document.createElement("div");
+  box.className = "msg-box " +
+   (msg.role === "assistant" ? "msg-bot" : "msg-user");
+
+  const name = document.createElement("div");
+  name.className = "msg-name";
+  name.textContent = msg.role === "assistant" ? "أوباناي إيغورو" : "أنتِ";
+
+  const content = document.createElement("div");
+  content.textContent = msg.content || "";
+
+  box.append(name, content);
+  messagesEl.appendChild(box);
+ });
+
+ messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
 async function sendMessage(text) {
-    if (!text.trim()) return;
+ if (sending || !text.trim()) return;
 
-    history.push({ role: 'user', content: text });
-    renderMessages();
-    input.value = '';
-    document.getElementById('onlineStatus').innerText = '• أوباناي يتحرك ويتحدث...';
+ sending = true;
+ input.disabled = true;
+ document.querySelectorAll("button").forEach(b => b.disabled = true);
 
-    const currentMemory = document.getElementById('memoryText').value;
+ history.push({ role:"user", content:text.trim() });
+ saveHistory();
+ renderMessages();
+ input.value = "";
+ statusEl.textContent = "• أوباناي يفكر...";
 
-    const apiMessages = [
-        { 
-                        content: SYSTEM_PROMPT + `\n\n[سياق القصة والذاكرة الحالية للمقر المشترك]:\n${currentMemory}`
+ try {
+  const recentHistory = history.slice(-12);
 
-        ...history.slice(-8)
-    ];
+  const response = await fetch("/api/chat", {
+   method:"POST",
+   headers: { "Content-Type":"application/json" },
+   body: JSON.stringify({
+    messages: [
+     { role:"system", content:SYSTEM_PROMPT },
+     ...recentHistory.map(m => ({
+      role:m.role,
+      content:m.content
+     }))
+    ]
+   })
+  });
 
-    try {
-        const response = await fetch('https://openrouter.ai', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer sk-or-v1-e6d47fa2242bc135b21beac7ca1e389d06bcf0cf4193fbcc4ec9f0fa1fd0722cc'
-            },
-            body: JSON.stringify({
-                model: 'meta-llama/llama-3.2-3b-instruct:free',
-                messages: apiMessages,
-                temperature: 0.74
-            })
-        });
+  const data = await response.json();
 
-        const data = await response.json();
-        
-        const hasData = data && data.choices && data.choices;
-        if (hasData && data.choices['message']) {
-            const reply = data.choices['message']['content'];
-            history.push({ role: 'assistant', content: reply });
-            localStorage.setItem('obanai_history', JSON.stringify(history));
-        } else {
-            throw new Error('API Error');
-        }
+  if (!response.ok) {
+   throw new Error(data.error || "تعذر الاتصال بالسيرفر");
+  }
 
-    } catch (err) {
-        console.error(err);
-        history.push({ 
-            role: 'assistant', 
-            content: `*يشيح أوباناي بنظره عنج ببرود قاتل ويهبط من الشجرة بخفة مستنداً على جدار الممر الخشبي للمقر* "السيرفر دا يواجه ضغط قوي هسة داخل القصر.. جربي تعيدين كلامج بعد ثواني."` 
-        });
-    }
+  const reply = data.choices?.[0]?.message?.content;
+  if (!reply) throw new Error("لم يصل رد من الذكاء الاصطناعي");
 
-    document.getElementById('onlineStatus').innerText = '• ملكية أوباياشيكي - المقر الموحد وقصر الفراشة';
-    renderMessages();
+  history.push({ role:"assistant", content:reply });
+  saveHistory();
+ } catch (err) {
+  history.push({
+   role:"assistant",
+   content:"*يعقد أوباناي حاجبيه وينظر إلى جهاز الاتصال ببرود.*\n\nالاتصال تعطل هالمرة. جرّبي مرة ثانية بعد ما نتأكد من إعدادات السيرفر. (" + err.message + ")"
+  });
+ } finally {
+  sending = false;
+  input.disabled = false;
+  document.querySelectorAll("button").forEach(b => b.disabled = false);
+  statusEl.textContent = "• ملكية أوباياشيكي — مقر الهاشيرا وقصر الفراشة";
+  renderMessages();
+  input.focus();
+ }
 }
 
-form.addEventListener('submit', e => { 
-    e.preventDefault(); 
-    sendMessage(input.value); 
+form.addEventListener("submit", event => {
+ event.preventDefault();
+ sendMessage(input.value);
 });
 
-document.querySelectorAll('.quick-btn').forEach(btn => {
-    btn.addEventListener('click', () => sendMessage(btn.dataset.text));
+document.querySelectorAll(".quick-btn").forEach(button => {
+ button.addEventListener("click", () => sendMessage(button.dataset.text));
 });
 
-document.getElementById('clearBtn').addEventListener('click', () => {
-    if(confirm('هل تريدين تصفير أحداث القصة والبدء من جديد داخل ملكية أوباياشيكي؟')) {
+document.getElementById("clearBtn").addEventListener("click", () => {
+ if (!confirm("تريدين تبدين السيناريو من جديد؟")) return;
+ history = [initialMessage];
+ saveHistory();
+ renderMessages();
+});
+
+renderMessages();
+</script>
+</body>
+</html>
