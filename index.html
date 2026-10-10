@@ -1,194 +1,182 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Obanai Iguro AI Chat</title>
-<style>
-*{box-sizing:border-box}
-body{
- margin:0;padding:14px;height:100dvh;display:flex;flex-direction:column;
- font-family:Arial,sans-serif;color:#f1eaff;
- background:linear-gradient(135deg,#0f071a,#25103c)
-}
-.status{color:#d1b3ff;font-size:13px;margin-bottom:12px}
-.quick-actions{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
-button{cursor:pointer}
-.btn{
- background:#251342;color:#e0b0ff;border:1px solid #7043a0;
- padding:9px;border-radius:8px
-}
-.danger{background:#5c1321;color:#ffd5dc}
-#messages{
- flex:1;min-height:0;overflow-y:auto;padding:12px;
- background:#10081ce8;border:1px solid #4a2880;
- border-radius:12px;margin-bottom:12px
-}
-.msg-box{
- margin-bottom:14px;padding:12px;border-radius:9px;
- line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere
-}
-.msg-bot{background:#211338;border-right:4px solid #bb86fc}
-.msg-user{background:#442173;border-right:4px solid #03dac6}
-.msg-name{font-size:12px;font-weight:bold;color:#c4a7ff;margin-bottom:5px}
-.msg-user .msg-name{color:#80cbc4}
-.composer{display:flex;gap:8px}
-textarea{
- flex:1;min-width:0;resize:none;padding:12px;border-radius:9px;
- background:#190c29;color:white;border:1px solid #7043a0;font-size:16px
-}
-.send-btn{background:#bb86fc;color:#100720;border:0;border-radius:9px;padding:0 18px;font-weight:bold}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Obanai AI Chat</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111013;
+      color: #f5f0f4;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 16px;
+      background: #1c191e;
+      border-bottom: 1px solid #493541;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      color: #e8a9c8;
+    }
+
+    header p {
+      margin: 7px 0 0;
+      font-size: 13px;
+      color: #b9aeb8;
+    }
+
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .message {
+      max-width: 85%;
+      padding: 12px 15px;
+      border-radius: 16px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .user {
+      align-self: flex-start;
+      background: #493043;
+      border-bottom-left-radius: 4px;
+    }
+
+    .assistant {
+      align-self: flex-end;
+      background: #252127;
+      border: 1px solid #493541;
+      border-bottom-right-radius: 4px;
+    }
+
+    .sender {
+      display: block;
+      margin-bottom: 5px;
+      color: #e8a9c8;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    #status {
+      min-height: 22px;
+      padding: 0 16px;
+      color: #c9a8bb;
+      font-size: 13px;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      background: #1c191e;
+      border-top: 1px solid #493541;
+    }
+
+    #messageInput {
+      flex: 1;
+      min-width: 0;
+      resize: none;
+      max-height: 120px;
+      border: 1px solid #51414f;
+      outline: none;
+      border-radius: 14px;
+      background: #29252c;
+      color: white;
+      padding: 12px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    #messageInput:focus {
+      border-color: #d38bb2;
+    }
+
+    #sendButton {
+      border: none;
+      border-radius: 12px;
+      padding: 0 18px;
+      background: #a75e86;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #sendButton:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
+
+    .welcome {
+      margin: auto;
+      text-align: center;
+      color: #c5b7c3;
+      line-height: 1.9;
+    }
+
+    .welcome strong {
+      color: #e8a9c8;
+      font-size: 20px;
+    }
+  </style>
 </head>
+
 <body>
-<div class="status" id="status">• ملكية أوباياشيكي — مقر الهاشيرا وقصر الفراشة</div>
+  <header>
+    <h1>🐍 Obanai AI Chat</h1>
+    <p>تحدثي مع أوباناي أگورو</p>
+  </header>
 
-<div class="quick-actions">
-<button class="btn quick-btn" data-text="*يجلس أوباناي فوق غصن شجرة الساكورا، يراقب باحة التدريب بعينيه المتباينتين، بينما تلتف كابورامارو حول عنقه وتصدر فحيحاً خافتاً. ينظر إليج ببرود.* شتريدين؟ وليش واكفة هنا؟">مراقبة من الشجرة</button>
-<button class="btn quick-btn" data-text="*تمر زوجات تينجن الثلاث بالقرب من باحة التدريب وهن يتجادلن، بينما تصرخ أوي على إينوسكي حتى يتناول دواءه. ترفع كابورامارو رأسها وتراقب الحركة.* أوباناي يلتفت إليج: واضح ماكو يوم هادئ بهالمقر.">حركة الأفعى والزوجات</button>
-<button class="btn danger" id="clearBtn">إعادة بدء السيناريو</button>
-</div>
+  <main id="chat">
+    <div class="welcome" id="welcome">
+      <strong>أوباناي أگورو</strong>
+      <div>...ينتظر أن تبدئي الحديث</div>
+    </div>
+  </main>
 
-<div id="messages"></div>
+  <div id="status" role="status"></div>
 
-<form class="composer" id="form">
-<textarea id="input" rows="2" placeholder="اكتبي ردج هنا لأوباناي..." required></textarea>
-<button class="send-btn" type="submit">إرسال</button>
-</form>
+  <form class="input-area" id="chatForm">
+    <textarea
+      id="messageInput"
+      placeholder="اكتبي رسالتچ هنا..."
+      rows="1"
+      required
+    ></textarea>
+    <button id="sendButton" type="submit">إرسال</button>
+  </form>
 
-<script>
-const SYSTEM_PROMPT = `تقمص شخصية أوباناي إيغورو من أنمي قاتل الشياطين.
-تحدث باللهجة العراقية العامية، بشخصية صارمة وباردة وحادة وذكية.
-الأحداث داخل ملكية أوباياشيكي، في مقر الهاشيرا وقصر الفراشة.
-اجعل العالم حياً بظهور رينغوكو وتينجن وزوجاته الثلاث وتانجيرو وزينيتسو وإينوسكي وشينوبو وكاناو وأوي والفتيات سومي وكيو وناهو.
-صف حركات أوباناي وعينيه المتباينتين والأفعى البيضاء كابورامارو بين النجمتين *...*.
-اكتب ردوداً روائية غنية ومفصلة، لكن اجعل الحوار طبيعياً واستجب لما تقوله المستخدمة ولا تتجاهل أفعالها.
-حافظ على استمرارية أحداث القصة بالاعتماد على الرسائل السابقة.`;
+  <script>
+    const chat = document.getElementById("chat");
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("messageInput");
+    const sendButton = document.getElementById("sendButton");
+    const statusText = document.getElementById("status");
+    const welcome = document.getElementById("welcome");
 
-const initialMessage = {
- role:"assistant",
- content:"*يجلس أوباناي على غصن شجرة الساكورا المطلة على باحة التدريب. عيناه المتباينتان تراقبان حركة الهاشيرا، بينما تلتف كابورامارو حول عنقه وترفع رأسها باتجاهج. يلتفت إليج ببرود.*\n\nشنو عندج؟ إذا جاية للمقر، احچي بوضوح ولا تخليني أظل أخمّن."
-};
+    const conversation = [];
 
-let history = [];
-try {
- history = JSON.parse(localStorage.getItem("obanai_history") || "[]");
- if (!Array.isArray(history)) history = [];
-} catch {
- history = [];
-}
-if (!history.length) history = [initialMessage];
-
-const messagesEl = document.getElementById("messages");
-const form = document.getElementById("form");
-const input = document.getElementById("input");
-const statusEl = document.getElementById("status");
-let sending = false;
-
-function saveHistory() {
- try {
-  localStorage.setItem("obanai_history", JSON.stringify(history));
- } catch (e) {
-  console.warn("Could not save chat history");
- }
-}
-
-function renderMessages() {
- messagesEl.replaceChildren();
-
- history.forEach(msg => {
-  const box = document.createElement("div");
-  box.className = "msg-box " +
-   (msg.role === "assistant" ? "msg-bot" : "msg-user");
-
-  const name = document.createElement("div");
-  name.className = "msg-name";
-  name.textContent = msg.role === "assistant" ? "أوباناي إيغورو" : "أنتِ";
-
-  const content = document.createElement("div");
-  content.textContent = msg.content || "";
-
-  box.append(name, content);
-  messagesEl.appendChild(box);
- });
-
- messagesEl.scrollTop = messagesEl.scrollHeight;
-}
-
-async function sendMessage(text) {
- if (sending || !text.trim()) return;
-
- sending = true;
- input.disabled = true;
- document.querySelectorAll("button").forEach(b => b.disabled = true);
-
- history.push({ role:"user", content:text.trim() });
- saveHistory();
- renderMessages();
- input.value = "";
- statusEl.textContent = "• أوباناي يفكر...";
-
- try {
-  const recentHistory = history.slice(-12);
-
-  const response = await fetch("/api/chat", {
-   method:"POST",
-   headers: { "Content-Type":"application/json" },
-   body: JSON.stringify({
-    messages: [
-     { role:"system", content:SYSTEM_PROMPT },
-     ...recentHistory.map(m => ({
-      role:m.role,
-      content:m.content
-     }))
-    ]
-   })
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-   throw new Error(data.error || "تعذر الاتصال بالسيرفر");
-  }
-
-  const reply = data.choices?.[0]?.message?.content;
-  if (!reply) throw new Error("لم يصل رد من الذكاء الاصطناعي");
-
-  history.push({ role:"assistant", content:reply });
-  saveHistory();
- } catch (err) {
-  history.push({
-   role:"assistant",
-   content:"*يعقد أوباناي حاجبيه وينظر إلى جهاز الاتصال ببرود.*\n\nالاتصال تعطل هالمرة. جرّبي مرة ثانية بعد ما نتأكد من إعدادات السيرفر. (" + err.message + ")"
-  });
- } finally {
-  sending = false;
-  input.disabled = false;
-  document.querySelectorAll("button").forEach(b => b.disabled = false);
-  statusEl.textContent = "• ملكية أوباياشيكي — مقر الهاشيرا وقصر الفراشة";
-  renderMessages();
-  input.focus();
- }
-}
-
-form.addEventListener("submit", event => {
- event.preventDefault();
- sendMessage(input.value);
-});
-
-document.querySelectorAll(".quick-btn").forEach(button => {
- button.addEventListener("click", () => sendMessage(button.dataset.text));
-});
-
-document.getElementById("clearBtn").addEventListener("click", () => {
- if (!confirm("تريدين تبدين السيناريو من جديد؟")) return;
- history = [initialMessage];
- saveHistory();
- renderMessages();
-});
-
-renderMessages();
-</script>
-</body>
-</html>
+    const systemPrompt = `
+أنت أوباناي أگورو من أنمي قاتل الشياطين.
+تحدث وتصرف بشخصية أوباناي، وبأسلوب قريب من شخصيته المعروفة:
+هادئ، حذر، قليل الكلام أحياناً
