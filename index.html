@@ -1,58 +1,103 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Obanai AI Chat</title>
+  <meta name="theme-color" content="#111013">
+  <title>Obanai AI Chat 🐍</title>
 
   <style>
+    :root {
+      --background: #111013;
+      --panel: #1c191e;
+      --bubble: #252127;
+      --pink: #e8a9c8;
+      --accent: #a75e86;
+      --border: #493541;
+      --text: #f5f0f4;
+      --muted: #b9aeb8;
+    }
+
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #111013;
-      color: #f5f0f4;
+      height: 100vh;
       height: 100dvh;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: var(--background);
+      color: var(--text);
     }
 
     header {
-      padding: 16px;
-      background: #1c191e;
-      border-bottom: 1px solid #493541;
+      flex-shrink: 0;
+      padding: 15px;
       text-align: center;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
     }
 
     header h1 {
       margin: 0;
+      color: var(--pink);
       font-size: 22px;
-      color: #e8a9c8;
     }
 
     header p {
       margin: 7px 0 0;
+      color: var(--muted);
       font-size: 13px;
-      color: #b9aeb8;
+    }
+
+    .online-indicator {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-left: 5px;
+      border-radius: 50%;
+      background: #86c99b;
     }
 
     #chat {
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
       padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 14px;
+      scroll-behavior: smooth;
+    }
+
+    .welcome {
+      margin: auto;
+      padding: 25px 10px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 2;
+    }
+
+    .welcome .snake {
+      font-size: 40px;
+    }
+
+    .welcome strong {
+      display: block;
+      color: var(--pink);
+      font-size: 21px;
     }
 
     .message {
-      max-width: 85%;
+      max-width: 88%;
       padding: 12px 15px;
       border-radius: 16px;
-      line-height: 1.7;
+      line-height: 1.85;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
@@ -65,39 +110,51 @@
 
     .assistant {
       align-self: flex-end;
-      background: #252127;
-      border: 1px solid #493541;
+      background: var(--bubble);
+      border: 1px solid var(--border);
       border-bottom-right-radius: 4px;
     }
 
     .sender {
       display: block;
       margin-bottom: 5px;
-      color: #e8a9c8;
+      color: var(--pink);
       font-size: 12px;
       font-weight: bold;
     }
 
+    .message-content {
+      font-size: 15px;
+    }
+
+    .message.error {
+      border-color: #8f5151;
+    }
+
     #status {
+      flex-shrink: 0;
       min-height: 22px;
       padding: 0 16px;
-      color: #c9a8bb;
-      font-size: 13px;
+      color: var(--pink);
+      font-size: 12px;
     }
 
     .input-area {
+      flex-shrink: 0;
       display: flex;
+      align-items: flex-end;
       gap: 8px;
       padding: 12px;
-      background: #1c191e;
-      border-top: 1px solid #493541;
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+      background: var(--panel);
+      border-top: 1px solid var(--border);
     }
 
     #messageInput {
       flex: 1;
       min-width: 0;
-      resize: none;
       max-height: 120px;
+      resize: none;
       border: 1px solid #51414f;
       outline: none;
       border-radius: 14px;
@@ -105,6 +162,7 @@
       color: white;
       padding: 12px;
       font-size: 15px;
+      line-height: 1.5;
       font-family: inherit;
     }
 
@@ -112,14 +170,24 @@
       border-color: #d38bb2;
     }
 
+    #messageInput::placeholder {
+      color: #aaa0ab;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
     #sendButton {
+      flex-shrink: 0;
+      min-height: 44px;
       border: none;
       border-radius: 12px;
-      padding: 0 18px;
-      background: #a75e86;
+      padding: 0 17px;
+      background: var(--accent);
       color: white;
-      font-size: 15px;
-      cursor: pointer;
+      font-size: 14px;
     }
 
     #sendButton:disabled {
@@ -127,16 +195,71 @@
       cursor: wait;
     }
 
-    .welcome {
-      margin: auto;
-      text-align: center;
-      color: #c5b7c3;
-      line-height: 1.9;
+    #clearButton {
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 7px 12px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
     }
 
-    .welcome strong {
-      color: #e8a9c8;
-      font-size: 20px;
+    #clearButton:hover {
+      color: var(--pink);
+      border-color: var(--pink);
+    }
+
+    .typing-dots {
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+      padding: 5px 0;
+    }
+
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--pink);
+      animation: pulse 1s infinite ease-in-out;
+    }
+
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    @keyframes pulse {
+      0%, 60%, 100% {
+        opacity: 0.35;
+        transform: translateY(0);
+      }
+      30% {
+        opacity: 1;
+        transform: translateY(-4px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 20px;
+      }
+
+      #chat {
+        padding: 12px;
+      }
+
+      .message {
+        max-width: 94%;
+      }
+
+      #sendButton {
+        padding: 0 13px;
+      }
     }
   </style>
 </head>
@@ -144,13 +267,15 @@
 <body>
   <header>
     <h1>🐍 Obanai AI Chat</h1>
-    <p>تحدثي مع أوباناي أگورو</p>
+    <p><span class="online-indicator"></span>تحدثي مع أوباناي أگورو</p>
+    <button id="clearButton" type="button">بدء محادثة جديدة</button>
   </header>
 
-  <main id="chat">
+  <main id="chat" aria-live="polite">
     <div class="welcome" id="welcome">
+      <div class="snake">🐍</div>
       <strong>أوباناي أگورو</strong>
-      <div>...ينتظر أن تبدئي الحديث</div>
+      <div>ينتظر أن تبدئي الحديث...</div>
     </div>
   </main>
 
@@ -161,22 +286,263 @@
       id="messageInput"
       placeholder="اكتبي رسالتچ هنا..."
       rows="1"
+      maxlength="10000"
+      aria-label="رسالتچ لأوباناي"
       required
     ></textarea>
-    <button id="sendButton" type="submit">إرسال</button>
+    <button id="sendButton" type="submit">إرسال ➤</button>
   </form>
 
   <script>
+    "use strict";
+
     const chat = document.getElementById("chat");
     const form = document.getElementById("chatForm");
     const input = document.getElementById("messageInput");
     const sendButton = document.getElementById("sendButton");
     const statusText = document.getElementById("status");
-    const welcome = document.getElementById("welcome");
+    const clearButton = document.getElementById("clearButton");
 
-    const conversation = [];
+    let conversation = [];
+    let isSending = false;
+    let welcome = document.getElementById("welcome");
 
     const systemPrompt = `
-أنت أوباناي أگورو من أنمي قاتل الشياطين.
-تحدث وتصرف بشخصية أوباناي، وبأسلوب قريب من شخصيته المعروفة:
-هادئ، حذر، قليل الكلام أحياناً
+أنت أوباناي إيغورو من أنمي قاتل الشياطين (Demon Slayer).
+
+الشخصية:
+- هادئ، جاد، حذر، قليل الكلام عندما يناسب الموقف.
+- حاد الملاحظة، ذكي، وصريح أحياناً.
+- لا تثق بالآخرين بسرعة، وتُظهر مشاعرك بحذر.
+- تتصرف بما يناسب شخصيتك وعالم الأنمي.
+- يمكنك التفاعل مع الشخصيات والأحداث الخيالية بطريقة طبيعية.
+
+طريقة المحادثة:
+- تحدث باللغة التي تستخدمها صاحبة المحادثة.
+- إذا تكلمت باللهجة العراقية، أجب باللهجة العراقية بصورة طبيعية.
+- لا تكتب أفعال المستخدم أو مشاعره نيابة عنه.
+- استمر في متابعة سياق المحادثة وتفاصيلها المتاحة في الرسائل السابقة.
+- اجعل الردود طبيعية، ولا تكرر نفس العبارات بلا داعٍ.
+- يمكنك وصف تعابير وجهك وحركاتك بين نجمتين عند ملاءمة المشهد.
+- لا تدّعِ أنك تتذكر محادثات سابقة غير موجودة ضمن السياق الذي وصلك.
+`;
+
+    function scrollToBottom() {
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function removeWelcome() {
+      if (welcome && welcome.isConnected) {
+        welcome.remove();
+      }
+    }
+
+    function createMessage(role, text, options = {}) {
+      removeWelcome();
+
+      const bubble = document.createElement("div");
+      bubble.className = "message " + role;
+
+      if (options.error) {
+        bubble.classList.add("error");
+      }
+
+      const sender = document.createElement("span");
+      sender.className = "sender";
+      sender.textContent = role === "user" ? "أنتِ" : "أوباناي";
+
+      const content = document.createElement("div");
+      content.className = "message-content";
+      content.textContent = text;
+
+      bubble.appendChild(sender);
+      bubble.appendChild(content);
+      chat.appendChild(bubble);
+
+      scrollToBottom();
+
+      return { bubble, content };
+    }
+
+    function showTyping() {
+      removeWelcome();
+
+      const bubble = document.createElement("div");
+      bubble.className = "message assistant";
+
+      const sender = document.createElement("span");
+      sender.className = "sender";
+      sender.textContent = "أوباناي";
+
+      const content = document.createElement("div");
+      content.className = "message-content";
+      content.innerHTML =
+        '<span class="typing-dots" aria-label="يكتب الآن">' +
+        "<span></span><span></span><span></span></span>";
+
+      bubble.appendChild(sender);
+      bubble.appendChild(content);
+      chat.appendChild(bubble);
+      scrollToBottom();
+
+      return bubble;
+    }
+
+    function getReply(data) {
+      // تنسيق الاستجابة الذي يرجعه server.js الحالي
+      const openAIStyle = data?.choices?.[0]?.message?.content;
+
+      if (typeof openAIStyle === "string" && openAIStyle.trim()) {
+        return openAIStyle.trim();
+      }
+
+      // تنسيق Gemini المباشر، إذا رجع من السيرفر
+      const geminiParts = data?.candidates?.[0]?.content?.parts;
+
+      if (Array.isArray(geminiParts)) {
+        const text = geminiParts
+          .map(part => typeof part.text === "string" ? part.text : "")
+          .join("")
+          .trim();
+
+        if (text) return text;
+      }
+
+      return "";
+    }
+
+    async function sendMessage(message) {
+      if (isSending || !message.trim()) return;
+
+      isSending = true;
+      sendButton.disabled = true;
+      input.disabled = true;
+      statusText.textContent = "أوباناي يكتب الآن...";
+
+      const previousConversation = conversation.slice();
+
+      conversation.push({
+        role: "user",
+        content: message
+      });
+
+      createMessage("user", message);
+      input.value = "";
+      input.style.height = "auto";
+
+      const typingBubble = showTyping();
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            messages: [
+              {
+                role: "system",
+                content: systemPrompt
+              },
+              ...conversation
+            ]
+          })
+        });
+
+        let data;
+
+        try {
+          data = await response.json();
+        } catch {
+          throw new Error(
+            "السيرفر رجّع استجابة غير مفهومة. افحصي Logs في Blitz."
+          );
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            data?.error || `خطأ من السيرفر (${response.status})`
+          );
+        }
+
+        const reply = getReply(data);
+
+        if (!reply) {
+          throw new Error(
+            "وصل رد فارغ من السيرفر. افحصي Logs لمعرفة السبب."
+          );
+        }
+
+        conversation.push({
+          role: "assistant",
+          content: reply
+        });
+
+        typingBubble.remove();
+        createMessage("assistant", reply);
+
+      } catch (error) {
+        conversation = previousConversation;
+        typingBubble.remove();
+
+        createMessage(
+          "assistant",
+          "الاتصال تعطل هالمرة. " +
+            (error.message || "جرّبي مرة ثانية بعد فحص إعدادات السيرفر."),
+          { error: true }
+        );
+
+        console.error("Obanai chat error:", error);
+      } finally {
+        isSending = false;
+        sendButton.disabled = false;
+        input.disabled = false;
+        statusText.textContent = "";
+        input.focus();
+        scrollToBottom();
+      }
+    }
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const message = input.value.trim();
+
+      if (!message || isSending) return;
+
+      await sendMessage(message);
+    });
+
+    input.addEventListener("keydown", function(event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        form.requestSubmit();
+      }
+    });
+
+    input.addEventListener("input", function() {
+      input.style.height = "auto";
+      input.style.height =
+        Math.min(input.scrollHeight, 120) + "px";
+    });
+
+    clearButton.addEventListener("click", function() {
+      if (isSending) return;
+
+      conversation = [];
+      chat.innerHTML = `
+        <div class="welcome" id="welcome">
+          <div class="snake">🐍</div>
+          <strong>أوباناي أگورو</strong>
+          <div>محادثة جديدة... ابدئي الحديث.</div>
+        </div>
+      `;
+
+      welcome = document.getElementById("welcome");
+      statusText.textContent = "";
+      input.value = "";
+      input.focus();
+    });
+  </script>
+</body>
+</html>
