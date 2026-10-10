@@ -10,11 +10,11 @@ app.use(express.static(__dirname));
 
 app.post("/api/chat", async (req, res) => {
   try {
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({
-        error: "OPENROUTER_API_KEY is not configured"
+        error: "OPENAI_API_KEY is not configured"
       });
     }
 
@@ -27,17 +27,15 @@ app.post("/api/chat", async (req, res) => {
     }
 
     const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
+      "https://api.openai.com/v1/chat/completions",
       {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://obanai-chat.onrender.com",
-          "X-Title": "Obanai AI Chat"
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "meta-llama/llama-3.2-3b-instruct:free",
+          model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
           messages,
           temperature: 0.74
         })
@@ -47,8 +45,9 @@ app.post("/api/chat", async (req, res) => {
     const data = await response.json();
 
     if (!response.ok) {
+      console.error("OpenAI error:", data.error?.message);
       return res.status(response.status).json({
-        error: data.error?.message || "AI service request failed"
+        error: data.error?.message || "OpenAI request failed"
       });
     }
 
@@ -56,7 +55,7 @@ app.post("/api/chat", async (req, res) => {
   } catch (error) {
     console.error("Chat request failed:", error.message);
     res.status(500).json({
-      error: "Could not connect to the AI service"
+      error: "Could not connect to OpenAI"
     });
   }
 });
