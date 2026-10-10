@@ -546,3 +546,34 @@
   </script>
 </body>
 </html>
+
+async function fetchWithRetry(url, options, retries = 2) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+
+      // إعادة المحاولة للأخطاء المؤقتة فقط
+      if (
+        response.status >= 500 ||
+        response.status === 429
+      ) {
+        if (attempt < retries) {
+          await new Promise(resolve =>
+            setTimeout(resolve, 1000 * (attempt + 1))
+          );
+          continue;
+        }
+      }
+
+      return response;
+    } catch (error) {
+      if (attempt === retries) throw error;
+
+      await new Promise(resolve =>
+        setTimeout(resolve, 1000 * (attempt + 1))
+      );
+    }
+  }
+
+  throw new Error("تعذر الاتصال بالسيرفر بعد عدة محاولات.");
+}
